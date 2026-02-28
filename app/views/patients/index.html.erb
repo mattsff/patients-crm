@@ -1,0 +1,67 @@
+<%= page_header "Patients" do %>
+  <%= link_to "New Patient", new_patient_path, class: "rounded-lg bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+<% end %>
+
+<div class="mb-6">
+  <%= form_with url: patients_path, method: :get, data: { controller: "search", turbo_frame: "patients" } do |f| %>
+    <%= f.search_field :query, value: params[:query],
+        placeholder: "Search patients by name, email, or phone...",
+        class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2.5 border",
+        data: { search_target: "input", action: "input->search#submit" },
+        autofocus: params[:query].present? %>
+  <% end %>
+</div>
+
+<%= turbo_frame_tag "patients" do %>
+  <div class="bg-white shadow rounded-xl overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Added</th>
+          <th class="px-6 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @patients.each do |patient| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= link_to patient.full_name, patient, class: "text-sm font-medium text-gray-900 hover:text-indigo-600", data: { turbo_frame: "_top" } %>
+              <% if patient.date_of_birth %>
+                <p class="text-xs text-gray-500">Age: <%= patient.age %></p>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <% if patient.email.present? %><p><%= patient.email %></p><% end %>
+              <% if patient.phone.present? %><p><%= patient.phone %></p><% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex gap-1 flex-wrap">
+                <% patient.tags.each do |tag| %>
+                  <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style="background-color: <%= tag.color %>">
+                    <%= tag.name %>
+                  </span>
+                <% end %>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <%= l(patient.created_at, format: :short) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+              <%= link_to "View", patient, class: "text-indigo-600 hover:text-indigo-900", data: { turbo_frame: "_top" } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <% if @patients.empty? %>
+      <div class="px-6 py-12 text-center">
+        <p class="text-sm text-gray-500">No patients found.</p>
+        <%= link_to "Add your first patient", new_patient_path, class: "mt-2 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-500" %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

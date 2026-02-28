@@ -1,0 +1,40 @@
+<%= page_header "Appointment Details" do %>
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_appointment_path(@appointment), class: "rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    <% if @appointment.scheduled? %>
+      <%= button_to "Complete", complete_appointment_path(@appointment), method: :patch, class: "rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500" %>
+      <%= button_to "Cancel", cancel_appointment_path(@appointment), method: :patch, class: "rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500", data: { turbo_confirm: "Cancel this appointment?" } %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="bg-white shadow rounded-xl p-6">
+  <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <dt class="text-sm font-medium text-gray-500">Patient</dt>
+      <dd class="mt-1 text-sm text-gray-900"><%= link_to @appointment.patient.full_name, @appointment.patient, class: "text-indigo-600 hover:text-indigo-500" %></dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-gray-500">Staff Member</dt>
+      <dd class="mt-1 text-sm text-gray-900"><%= @appointment.user.full_name %></dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-gray-500">Date & Time</dt>
+      <dd class="mt-1 text-sm text-gray-900"><%= l(@appointment.starts_at, format: :long) %> - <%= l(@appointment.ends_at, format: :short) %></dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-gray-500">Duration</dt>
+      <dd class="mt-1 text-sm text-gray-900"><%= @appointment.duration_minutes %> minutes</dd>
+    </div>
+    <div>
+      <dt class="text-sm font-medium text-gray-500">Status</dt>
+      <dd class="mt-1"><%= appointment_status_badge(@appointment.status) %></dd>
+    </div>
+    <% if @appointment.notes.present? %>
+      <div class="sm:col-span-2">
+        <dt class="text-sm font-medium text-gray-500">Notes</dt>
+        <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap"><%= @appointment.notes %></dd>
+      </div>
+    <% end %>
+  </dl>
+</div>

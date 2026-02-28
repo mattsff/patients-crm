@@ -1,0 +1,50 @@
+<%= form_with(model: appointment, class: "space-y-6") do |f| %>
+  <% if appointment.errors.any? %>
+    <div class="rounded-lg bg-red-50 p-4">
+      <ul class="list-disc list-inside text-sm text-red-700">
+        <% appointment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= f.label :patient_id, "Patient", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.collection_select :patient_id, Patient.ordered, :id, :full_name,
+          { prompt: "Select a patient" },
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+    <div>
+      <%= f.label :user_id, "Staff Member", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.collection_select :user_id, Current.clinic.users, :id, :full_name,
+          { prompt: "Select staff" },
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= f.label :starts_at, "Start Time", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.datetime_local_field :starts_at,
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+    <div>
+      <%= f.label :ends_at, "End Time", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.datetime_local_field :ends_at,
+          class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :notes, class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_area :notes, rows: 3,
+        class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+  </div>
+
+  <div class="flex justify-end gap-3">
+    <%= link_to "Cancel", appointments_path, class: "rounded-lg bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    <%= f.submit class: "rounded-lg bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 cursor-pointer" %>
+  </div>
+<% end %>

@@ -1,0 +1,67 @@
+<%= page_header "Dashboard" %>
+
+<%# Metric cards %>
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
+  <div class="overflow-hidden rounded-xl bg-white px-4 py-5 shadow sm:p-6">
+    <dt class="truncate text-sm font-medium text-gray-500">Total Patients</dt>
+    <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_patients %></dd>
+  </div>
+  <div class="overflow-hidden rounded-xl bg-white px-4 py-5 shadow sm:p-6">
+    <dt class="truncate text-sm font-medium text-gray-500">Appointments Today</dt>
+    <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @appointments_today %></dd>
+  </div>
+  <div class="overflow-hidden rounded-xl bg-white px-4 py-5 shadow sm:p-6">
+    <dt class="truncate text-sm font-medium text-gray-500">Upcoming Appointments</dt>
+    <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= Appointment.upcoming.count %></dd>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+  <%# Upcoming appointments %>
+  <div class="bg-white shadow rounded-xl">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-base font-semibold text-gray-900">Upcoming Appointments</h3>
+    </div>
+    <ul role="list" class="divide-y divide-gray-200">
+      <% if @upcoming_appointments.any? %>
+        <% @upcoming_appointments.each do |appointment| %>
+          <li class="px-4 py-4 sm:px-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-900">
+                  <%= link_to appointment.patient.full_name, appointment.patient, class: "hover:text-indigo-600" %>
+                </p>
+                <p class="text-sm text-gray-500">with <%= appointment.user.full_name %></p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-gray-900"><%= l(appointment.starts_at, format: :short) %></p>
+                <p class="text-xs text-gray-500"><%= appointment.duration_minutes %> min</p>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="px-4 py-8 text-center text-sm text-gray-500">No upcoming appointments</li>
+      <% end %>
+    </ul>
+  </div>
+
+  <%# Recent activity %>
+  <div class="bg-white shadow rounded-xl">
+    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+      <h3 class="text-base font-semibold text-gray-900">Recent Activity</h3>
+    </div>
+    <ul role="list" class="divide-y divide-gray-200">
+      <% if @recent_activity.any? %>
+        <% @recent_activity.each do |event| %>
+          <li class="px-4 py-3 sm:px-6">
+            <p class="text-sm text-gray-900"><%= event.description %></p>
+            <p class="text-xs text-gray-500"><%= time_ago_in_words(event.created_at) %> ago</p>
+          </li>
+        <% end %>
+      <% else %>
+        <li class="px-4 py-8 text-center text-sm text-gray-500">No recent activity</li>
+      <% end %>
+    </ul>
+  </div>
+</div>

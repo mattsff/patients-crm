@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-50">
+  <head>
+    <title><%= content_for(:title) || clinic_name %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="application-name" content="<%= clinic_name %>">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <%= white_label_css_variables if user_signed_in? %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full">
+    <% if user_signed_in? %>
+      <div class="min-h-full" data-controller="sidebar">
+        <%# Mobile sidebar overlay %>
+        <div class="relative z-50 lg:hidden" data-sidebar-target="overlay" class="hidden" role="dialog" aria-modal="true">
+          <div class="fixed inset-0 bg-gray-900/80" data-action="click->sidebar#close"></div>
+          <div class="fixed inset-0 flex">
+            <div class="relative mr-16 flex w-full max-w-xs flex-1" data-sidebar-target="mobile">
+              <%= render "shared/sidebar" %>
+            </div>
+          </div>
+        </div>
+
+        <%# Desktop sidebar %>
+        <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
+          <%= render "shared/sidebar" %>
+        </div>
+
+        <%# Main content %>
+        <div class="lg:pl-64">
+          <%= render "shared/topbar" %>
+
+          <main class="py-6">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <%= render "shared/flash" %>
+              <%= yield %>
+            </div>
+          </main>
+        </div>
+      </div>
+    <% else %>
+      <main class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <%= render "shared/flash" %>
+        <%= yield %>
+      </main>
+    <% end %>
+  </body>
+</html>

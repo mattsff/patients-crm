@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "/Users/matias/.rbenv/shims/ruby",
+      "runtimeArgs": ["bin/rails", "server"],
+      "port": 3000,
+      "autoPort": true,
+      "env": {
+        "PATH": "/Users/matias/.rbenv/shims:/Users/matias/.rbenv/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
+        "RBENV_VERSION": "3.3.10"
+      }
+    }
+  ]
+}

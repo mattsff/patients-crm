@@ -1,0 +1,54 @@
+<%= form_with(model: patient, class: "space-y-6") do |f| %>
+  <% if patient.errors.any? %>
+    <div class="rounded-lg bg-red-50 p-4">
+      <ul class="list-disc list-inside text-sm text-red-700">
+        <% patient.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= f.label :first_name, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :first_name, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border", required: true %>
+    </div>
+    <div>
+      <%= f.label :last_name, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :last_name, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border", required: true %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.email_field :email, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+    <div>
+      <%= f.label :phone, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.telephone_field :phone, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= f.label :date_of_birth, class: "block text-sm font-medium text-gray-700" %>
+      <%= f.date_field :date_of_birth, class: "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border" %>
+    </div>
+    <div>
+      <%= f.label :tag_ids, "Tags", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.collection_check_boxes :tag_ids, Tag.ordered, :id, :name do |b| %>
+        <label class="inline-flex items-center mr-4 mt-2">
+          <%= b.check_box(class: "rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4") %>
+          <span class="ml-2 text-sm text-gray-700"><%= b.text %></span>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3">
+    <%= link_to "Cancel", patients_path, class: "rounded-lg bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    <%= f.submit class: "rounded-lg bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 cursor-pointer" %>
+  </div>
+<% end %>

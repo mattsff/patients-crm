@@ -1,0 +1,120 @@
+<%= page_header @patient.full_name do %>
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_patient_path(@patient), class: "rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+    <%= link_to "Schedule Appointment", new_patient_appointment_path(@patient), class: "rounded-lg bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+  </div>
+<% end %>
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+  <%# Patient info card %>
+  <div class="lg:col-span-1">
+    <div class="bg-white shadow rounded-xl p-6">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-lg">
+          <%= @patient.first_name[0] %><%= @patient.last_name[0] %>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900"><%= @patient.full_name %></h3>
+          <% if @patient.age %><p class="text-sm text-gray-500">Age <%= @patient.age %></p><% end %>
+        </div>
+      </div>
+
+      <dl class="space-y-3 text-sm">
+        <% if @patient.email.present? %>
+          <div>
+            <dt class="text-gray-500">Email</dt>
+            <dd class="text-gray-900"><%= @patient.email %></dd>
+          </div>
+        <% end %>
+        <% if @patient.phone.present? %>
+          <div>
+            <dt class="text-gray-500">Phone</dt>
+            <dd class="text-gray-900"><%= @patient.phone %></dd>
+          </div>
+        <% end %>
+        <% if @patient.date_of_birth.present? %>
+          <div>
+            <dt class="text-gray-500">Date of Birth</dt>
+            <dd class="text-gray-900"><%= l(@patient.date_of_birth, format: :long) %></dd>
+          </div>
+        <% end %>
+      </dl>
+
+      <% if @patient.tags.any? %>
+        <div class="mt-4 flex flex-wrap gap-1">
+          <% @patient.tags.each do |tag| %>
+            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style="background-color: <%= tag.color %>">
+              <%= tag.name %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Notes & appointments %>
+  <div class="lg:col-span-2 space-y-6">
+    <%# Notes section %>
+    <div class="bg-white shadow rounded-xl">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="text-base font-semibold text-gray-900">Notes</h3>
+      </div>
+
+      <div class="p-4" id="notes">
+        <%= turbo_frame_tag "new_note_form" do %>
+          <%= render "notes/form", patient: @patient, note: Note.new %>
+        <% end %>
+
+        <div id="notes_list" class="mt-4 space-y-3">
+          <% @notes.each do |note| %>
+            <%= render "notes/note", note: note %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <%# Upcoming appointments %>
+    <div class="bg-white shadow rounded-xl">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-base font-semibold text-gray-900">Upcoming Appointments</h3>
+      </div>
+      <ul class="divide-y divide-gray-200">
+        <% @upcoming_appointments.each do |appointment| %>
+          <li class="px-4 py-4 sm:px-6 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-900"><%= l(appointment.starts_at, format: :short) %></p>
+              <p class="text-sm text-gray-500">with <%= appointment.user.full_name %> (<%= appointment.duration_minutes %> min)</p>
+            </div>
+            <div class="flex gap-2">
+              <%= appointment_status_badge(appointment.status) %>
+              <% if appointment.scheduled? %>
+                <%= button_to "Complete", complete_appointment_path(appointment), method: :patch, class: "text-xs text-green-600 hover:text-green-800" %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+        <% if @upcoming_appointments.empty? %>
+          <li class="px-4 py-6 text-center text-sm text-gray-500">No upcoming appointments</li>
+        <% end %>
+      </ul>
+    </div>
+
+    <%# Activity timeline %>
+    <div class="bg-white shadow rounded-xl">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-base font-semibold text-gray-900">Activity Timeline</h3>
+      </div>
+      <ul class="divide-y divide-gray-200">
+        <% @activity_events.each do |event| %>
+          <li class="px-4 py-3 sm:px-6">
+            <p class="text-sm text-gray-900"><%= event.description %></p>
+            <p class="text-xs text-gray-500"><%= time_ago_in_words(event.created_at) %> ago</p>
+          </li>
+        <% end %>
+        <% if @activity_events.empty? %>
+          <li class="px-4 py-6 text-center text-sm text-gray-500">No activity yet</li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

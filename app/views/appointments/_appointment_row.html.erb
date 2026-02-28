@@ -1,0 +1,27 @@
+<li class="px-4 py-3 flex items-center justify-between hover:bg-gray-50">
+  <div class="flex items-center gap-4">
+    <div class="text-sm">
+      <span class="font-medium text-gray-900"><%= l(appointment.starts_at, format: :short) %></span>
+      <span class="text-gray-400">-</span>
+      <span class="text-gray-500"><%= l(appointment.ends_at, format: :short) %></span>
+    </div>
+    <div>
+      <p class="text-sm font-medium text-gray-900">
+        <%= link_to appointment.patient.full_name, appointment.patient, class: "hover:text-indigo-600" %>
+      </p>
+      <p class="text-xs text-gray-500">with <%= appointment.user.full_name %></p>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <%= appointment_status_badge(appointment.status) %>
+    <% if appointment.scheduled? %>
+      <div class="flex gap-1">
+        <%= button_to "Complete", complete_appointment_path(appointment), method: :patch,
+            class: "rounded px-2 py-1 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100" %>
+        <%= button_to "Cancel", cancel_appointment_path(appointment), method: :patch,
+            class: "rounded px-2 py-1 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100",
+            data: { turbo_confirm: "Cancel this appointment?" } %>
+      </div>
+    <% end %>
+  </div>
+</li>
